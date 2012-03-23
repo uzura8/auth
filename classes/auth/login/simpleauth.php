@@ -101,7 +101,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver
 	public function login($username_or_email = '', $password = '')
 	{
 		$username_or_email = trim($username_or_email) ?: trim(\Input::post(\Config::get('simpleauth.username_post_key', 'username')));
-		$password = trim($password) ?: trim(\Input::post(\Config::get('simpleauth.password_post_key', 'password')));
+		$password = trim($password) ? trim($password) : trim(\Input::post(\Config::get('simpleauth.password_post_key', 'password')));
 
 		if (empty($username_or_email) or empty($password))
 		{
@@ -528,7 +528,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver
 		if (!$this->perform_check()) return false;
 
 		$username = \Session::get('username');
-		$password = trim($password) ?: trim(\Input::post(\Config::get('simpleauth.password_post_key', 'password')));
+		$password = trim($password) ? trim($password) : trim(\Input::post(\Config::get('simpleauth.password_post_key', 'password')));
 		if (empty($username) || empty($password)) return false;
 
 		return (bool)\DB::select_array(\Config::get('simpleauth.table_columns', array('*')))
