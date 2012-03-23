@@ -516,6 +516,27 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver
 	{
 		return \Config::get('simpleauth.guest_login', true);
 	}
+
+	/**
+	 * Check password
+	 *
+	 * @param   string
+	 * @return  bool
+	 */
+	public function check_password($password = '')
+	{
+		if (!$this->perform_check()) return false;
+
+		$username = \Session::get('username');
+		$password = trim($password) ?: trim(\Input::post(\Config::get('simpleauth.password_post_key', 'password')));
+		if (empty($username) || empty($password)) return false;
+
+		return (bool)\DB::select_array(\Config::get('simpleauth.table_columns', array('*')))
+			->where('username', '=', $username)
+			->and_where('password', '=', $this->hash_password($password))
+			->from(\Config::get('simpleauth.table_name'))
+			->execute(\Config::get('simpleauth.db_connection'))->current();
+	}
 }
 
 // end of file simpleauth.php
